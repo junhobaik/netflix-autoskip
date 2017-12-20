@@ -1,0 +1,26 @@
+{
+    "name": "Netflix AutoSkip: Skip Intro & Next Episode",
+    "short_name": "Netflix AutoSkip",
+    "version": "0.1",
+    "manifest_version": 2,
+    "description": "Netflix Auto skip Intro & Auto play Next episode.",
+    "icons": {
+        "128": "icon.png"
+    },
+    "browser_action": {
+        "default_icon": "icon.png",
+        "default_popup": "popup.html"
+    },
+    "permissions": [
+        "*://*.netflix.com/watch/*",
+        "storage"
+    ],
+    "content_scripts": [{
+        "matches": [
+            "*://*.netflix.com/watch/*"
+        ],
+        "js": [
+            "js/watch.js"
+        ]
+    }]
+}
