@@ -3,20 +3,27 @@ console.log("'Netflix AutoSkip' is running");
 let setting;
 chrome.storage.sync.get('netflixAutoSkip_setting', function (items) {
     setting = items.netflixAutoSkip_setting;
-});
-
-chrome.storage.onChanged.addListener(function (changes, namespace) {
-    for (key in changes) {
-        var storageChange = changes[key];
-        setting = storageChange.newValue;
-        // console.log('Storage key "%s" in namespace "%s" changed. ' +
-        //     'Old value was "%s", new value is "%s".',
-        //     key,
-        //     namespace,
-        //     storageChange.oldValue,
-        //     storageChange.newValue);
+    if(setting === undefined){
+        chrome.storage.sync.set({
+            'netflixAutoSkip_setting': 1
+        }, function () {
+            setting = 1;
+        });
     }
 });
+
+// chrome.storage.onChanged.addListener(function (changes, namespace) {
+//     for (key in changes) {
+//         var storageChange = changes[key];
+//         setting = storageChange.newValue;
+//         console.log('Storage key "%s" in namespace "%s" changed. ' +
+//             'Old value was "%s", new value is "%s".',
+//             key,
+//             namespace,
+//             storageChange.oldValue,
+//             storageChange.newValue);
+//     }
+// });
 
 const skipIntro = () => {
     const intro = document.querySelector('.skip-credits a');
