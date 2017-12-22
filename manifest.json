@@ -12,12 +12,12 @@
         "default_popup": "popup.html"
     },
     "permissions": [
-        "*://*.netflix.com/watch/*",
+        "*://*.netflix.com/*",
         "storage"
     ],
     "content_scripts": [{
         "matches": [
-            "*://*.netflix.com/watch/*"
+            "*://*.netflix.com/*"
         ],
         "js": [
             "js/watch.js"
