@@ -1,7 +1,7 @@
 {
     "name": "Netflix AutoSkip: Skip Intro & Next Episode",
     "short_name": "Netflix AutoSkip",
-    "version": "0.2",
+    "version": "0.3",
     "manifest_version": 2,
     "description": "Netflix Auto skip Intro & Auto play Next episode.",
     "icons": {
