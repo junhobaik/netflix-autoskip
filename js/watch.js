@@ -3,7 +3,7 @@ console.log("'Netflix AutoSkip' is running");
 let setting;
 chrome.storage.sync.get('netflixAutoSkip_setting', function (items) {
     setting = items.netflixAutoSkip_setting;
-    if(setting === undefined){
+    if (setting === undefined) {
         chrome.storage.sync.set({
             'netflixAutoSkip_setting': 1
         }, function () {
@@ -12,18 +12,20 @@ chrome.storage.sync.get('netflixAutoSkip_setting', function (items) {
     }
 });
 
-// chrome.storage.onChanged.addListener(function (changes, namespace) {
-//     for (key in changes) {
-//         var storageChange = changes[key];
-//         setting = storageChange.newValue;
-//         console.log('Storage key "%s" in namespace "%s" changed. ' +
-//             'Old value was "%s", new value is "%s".',
-//             key,
-//             namespace,
-//             storageChange.oldValue,
-//             storageChange.newValue);
-//     }
-// });
+/*
+chrome.storage.onChanged.addListener(function (changes, namespace) {
+    for (key in changes) {
+        var storageChange = changes[key];
+        setting = storageChange.newValue;
+        console.log('Storage key "%s" in namespace "%s" changed. ' +
+            'Old value was "%s", new value is "%s".',
+            key,
+            namespace,
+            storageChange.oldValue,
+            storageChange.newValue);
+    }
+});
+*/
 
 const skipIntro = () => {
     const intro = document.querySelector('.skip-credits a');
@@ -31,6 +33,8 @@ const skipIntro = () => {
         setTimeout(function () {
             intro.click();
         }, 200);
+
+        console.log("skipIntro()");
     }
 }
 
@@ -41,15 +45,21 @@ const skipNextEpisode = () => {
         setTimeout(function () {
             nextEpisode.click();
         }, 200);
+        console.log("skipNextEpisode(), nomal");
     }
     if (nextEpisodeFull !== null) {
         setTimeout(function () {
             nextEpisodeFull.click();
         }, 200);
+        console.log("skipNextEpisode(), full");
     }
+    
 }
 
-document.querySelector('body').addEventListener("DOMSubtreeModified", (e) => {
+
+
+const el = document.querySelector('body');
+const skipEvent = () => {
     switch (setting) {
         case 1:
             skipIntro();
@@ -66,5 +76,23 @@ document.querySelector('body').addEventListener("DOMSubtreeModified", (e) => {
         default:
             break;
     }
+};
 
-});
+
+let isWatch = false;
+setInterval(() => {
+    // TODO: watch 정규표현식 검사로 바꾸기
+    if (window.location.pathname.indexOf('watch') !== -1) {
+        console.log("Watch...");
+        if (isWatch === false) {
+            isWatch = true;
+            el.addEventListener("DOMSubtreeModified", skipEvent);
+        }
+    } else {
+        console.log("No Watch.");
+        if (isWatch === true) {
+            isWarch = false;
+            el.removeEventListener("DOMSubtreeModified", skipEvent, { passive: true });
+        }
+    }
+}, 1000)
