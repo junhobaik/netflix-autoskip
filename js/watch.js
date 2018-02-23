@@ -33,8 +33,6 @@ const skipIntro = () => {
         setTimeout(function () {
             intro.click();
         }, 200);
-
-        console.log("skipIntro()");
     }
 }
 
@@ -45,20 +43,15 @@ const skipNextEpisode = () => {
         setTimeout(function () {
             nextEpisode.click();
         }, 200);
-        console.log("skipNextEpisode(), nomal");
     }
     if (nextEpisodeFull !== null) {
         setTimeout(function () {
             nextEpisodeFull.click();
         }, 200);
-        console.log("skipNextEpisode(), full");
     }
     
 }
 
-
-
-const el = document.querySelector('body');
 const skipEvent = () => {
     switch (setting) {
         case 1:
@@ -80,19 +73,19 @@ const skipEvent = () => {
 
 
 let isWatch = false;
+const el = document.querySelector('body');
+
 setInterval(() => {
     // TODO: watch 정규표현식 검사로 바꾸기
     if (window.location.pathname.indexOf('watch') !== -1) {
-        console.log("Watch...");
         if (isWatch === false) {
             isWatch = true;
             el.addEventListener("DOMSubtreeModified", skipEvent);
         }
     } else {
-        console.log("No Watch.");
         if (isWatch === true) {
             isWarch = false;
             el.removeEventListener("DOMSubtreeModified", skipEvent, { passive: true });
         }
     }
-}, 1000)
+}, 1000);
