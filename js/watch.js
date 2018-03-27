@@ -1,91 +1,66 @@
 console.log("'Netflix AutoSkip' is running");
 
 let setting;
+
 chrome.storage.sync.get('netflixAutoSkip_setting', function (items) {
     setting = items.netflixAutoSkip_setting;
     if (setting === undefined) {
         chrome.storage.sync.set({
             'netflixAutoSkip_setting': 1
-        }, function () {
-            setting = 1;
-        });
+        }, function () {});
     }
 });
 
-/*
 chrome.storage.onChanged.addListener(function (changes, namespace) {
-    for (key in changes) {
-        var storageChange = changes[key];
-        setting = storageChange.newValue;
-        console.log('Storage key "%s" in namespace "%s" changed. ' +
-            'Old value was "%s", new value is "%s".',
-            key,
-            namespace,
-            storageChange.oldValue,
-            storageChange.newValue);
-    }
+    setting = changes.netflixAutoSkip_setting.newValue;
 });
-*/
 
-const skipIntro = () => {
-    const intro = document.querySelector('.skip-credits a');
-    if (intro !== null) {
-        setTimeout(function () {
-            intro.click();
-        }, 200);
-    }
+const skipping = function () {
+    const arg = [...arguments];
+    setTimeout(() => {
+        for (let v of arg) {
+            if (v) v.click();
+        }
+    }, 200);
 }
 
-const skipNextEpisode = () => {
-    const nextEpisodeFull = document.querySelector('div.WatchNext-still-container');
-    const nextEpisode = document.querySelector('a.nf-icon-button.nf-flat-button.nf-flat-button-primary');
-    if (nextEpisode !== null) {
-        setTimeout(function () {
-            nextEpisode.click();
-        }, 200);
-    }
-    if (nextEpisodeFull !== null) {
-        setTimeout(function () {
-            nextEpisodeFull.click();
-        }, 200);
-    }
-    
-}
+const eventCase = () => {
+    const opening = document.querySelector('.skip-credits a'),
+        next = document.querySelectorAll('div.main-hitzone-element-container a.nf-icon-button')[1],
+        nextFull = document.querySelector('div.WatchNext-still-hover-container div.PlayIcon');
 
-const skipEvent = () => {
-    switch (setting) {
-        case 1:
-            skipIntro();
-            skipNextEpisode();
-            break;
+    switch(setting){
         case 2:
-            skipIntro();
+            skipping(opening);
             break;
+        case 1:
+            skipping(opening);
         case 3:
-            skipNextEpisode();
+            skipping(next, nextFull);
             break;
         case 4:
             break;
         default:
             break;
     }
-};
+}
 
-
+/**************************************************************************************************** */
 let isWatch = false;
-const el = document.querySelector('body');
+const body = document.querySelector('body');
 
 setInterval(() => {
-    // TODO: watch 정규표현식 검사로 바꾸기
     if (window.location.pathname.indexOf('watch') !== -1) {
         if (isWatch === false) {
             isWatch = true;
-            el.addEventListener("DOMSubtreeModified", skipEvent);
+            body.addEventListener("DOMSubtreeModified", eventCase);
         }
     } else {
         if (isWatch === true) {
-            isWarch = false;
-            el.removeEventListener("DOMSubtreeModified", skipEvent, { passive: true });
+            isWatch = false;
+            body.removeEventListener("DOMSubtreeModified", eventCase, {
+                passive: true
+            });
         }
     }
 }, 1000);
