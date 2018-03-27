@@ -6,8 +6,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.querySelector("body").addEventListener("change", () => {
+        const setNum = dropdown.selectedIndex + 1;
+
         chrome.storage.sync.set({
-            'netflixAutoSkip_setting': dropdown.selectedIndex + 1
+            'netflixAutoSkip_setting': setNum,
+            
         }, function () {});
     })
 
