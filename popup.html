@@ -2,66 +2,56 @@
 <html>
 
 <head>
-    <title></title>
-    <style type="text/css">
-        body {
-            margin:0;
-            padding:0;
-            white-space: nowrap;
-            min-width: 15rem;
-        }
-
-        .title {
-            background-color: #141414;
-            color:white;
-            display: flex;
-            align-items: flex-end;
-            padding: 0.2rem;
-        }
-        .title img {
-            width: 1rem;
-            height: 1rem;
-        }
-
-        .title span {
-            margin-left: 0.5rem;
-            font-size: 1rem;
-            font-weight: nomal;
-        }
-
-        #container {
-            padding: 2rem 1rem;
-            font-size: 1rem;
-            align-items: center;
-            display: flex;
-            justify-content: space-between;
-            flex-direction: row;
-        }
-        #dropdown{
-            font-size: 1rem;
-            flex-grow: 1;
-            margin-left: 0.5rem;
-        }
-    </style>
-    <script src="js/popup.js"></script>
-    <script src="js/analytics.js"></script>
+  <title></title>
+  <link rel="stylesheet" href="./popup.css">
+  <script src="./js/popup.js"></script>
+  <script src="./js/analytics.js"></script>
 </head>
 
 <body>
-    <div class="title">
-        <img src="./icon.png" alt="icon">
-        <span>Netflix AutoSkip</span>
+
+  <div class="title">
+    <img src="./icon.png" alt="icon">
+    <span>Netflix AutoSkip</span>
+  </div>
+
+  <div class="card">
+
+    <div class="card-body">
+
+      <p class="card-title">Skip Options.</p>
+      <p class="card-text">Check the item you want to skip.</p>
+
+      <div class="option-list">
+
+        <div class="option">
+          <label class="option-name" for="intro">Intro</label>
+          <label class="switch">
+            <input type="checkbox" checked id="intro">
+            <span class="slider round"></span>
+          </label>
+        </div>
+
+        <div class="option">
+          <label class="option-name" for="recap">Recap</label>
+          <label class="switch">
+            <input type="checkbox" checked id="recap">
+            <span class="slider round"></span>
+          </label>
+        </div>
+
+        <div class="option">
+          <label class="option-name" for="nextEpisode">Next Episode Countdown</label>
+          <label class="switch">
+            <input type="checkbox" checked id="nextEpisode">
+            <span class="slider round"></span>
+          </label>
+        </div>
+      </div>
+
     </div>
-    
-    <div id="container">
-        <label for="dropdown">Skip </label>
-        <select id="dropdown">
-            <option value="1">Intro & Next Episode Countdown</option>
-            <option value="2">Intro</option>
-            <option value="3">Next Episode Countdown</option>
-            <option value="4">Off</option>
-        </select>
-    </div>
+  </div>
+
 </body>
 
 </html>

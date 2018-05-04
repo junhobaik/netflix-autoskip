@@ -1,17 +1,24 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
+  chrome.storage.sync.get("netflixAutoSkip_setting", function(items) {
+    const setting = items.netflixAutoSkip_setting;
+    let checkboxList = document.querySelectorAll(".option input");
+    for (let i = 0; i < checkboxList.length; i++) {
+      checkboxList[i].checked = setting[i];
+    }
+  });
 
-    chrome.storage.sync.get('netflixAutoSkip_setting', function (items) {
-        const select = items.netflixAutoSkip_setting;
-        document.querySelector(`#dropdown>option:nth-child(${select})`).setAttribute('selected', true);
-    });
+  document.querySelector("body").addEventListener("change", () => {
+    const checkbox = Array.from(document.querySelectorAll(".option input"));
 
-    document.querySelector("body").addEventListener("change", () => {
-        const setNum = dropdown.selectedIndex + 1;
-
-        chrome.storage.sync.set({
-            'netflixAutoSkip_setting': setNum,
-            
-        }, function () {});
-    })
-
+    const result = checkbox.reduce((prev, curr, i) => {
+      if (!prev) prev = [];
+      return [...prev, curr.checked];
+    }, "");
+    chrome.storage.sync.set(
+      {
+        netflixAutoSkip_setting: result
+      },
+      function() {}
+    );
+  });
 });
