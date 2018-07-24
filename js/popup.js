@@ -1,4 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
+  $(function () {
+    $(document).tooltip();
+  });
+  
   chrome.storage.sync.get("netflixAutoSkip_setting", function(items) {
     const setting = items.netflixAutoSkip_setting;
     let checkboxList = document.querySelectorAll(".option input");
