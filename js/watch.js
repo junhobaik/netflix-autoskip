@@ -4,7 +4,7 @@ let setting,
   skipList = [],
   isLoadingCheck = false;
 
-const el = [
+const targetEls = [
   {
     name: "intro",
     loadEl: () => [document.querySelector(".skip-credits a")]
@@ -28,7 +28,7 @@ const makeSkipList = setting => {
   let skipList = [];
   for (let index in setting) {
     if (setting[index]) {
-      skipList = [...skipList, el[index].loadEl];
+      skipList = [...skipList, targetEls[index].loadEl];
     }
   }
   return skipList;
@@ -101,8 +101,7 @@ const eventControl = new DOMSubtreeModifiedEventControl(() => {
       eventControl.remove();
       el.click();
     }, 200);
-
-    if (el === skipList[0]()[0]) {
+    if (el === targetEls[0].loadEl()[0]) {
       eventControl.remove();
       loadingCheck.add();
       setTimeout(() => {
