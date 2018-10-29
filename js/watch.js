@@ -2,24 +2,36 @@ console.log("'Netflix AutoSkip' is running");
 
 let setting,
   skipList = [],
-  isLoadingCheck = false;
+  setChange = false,
+  pathName = "";
 
 const targetEls = [
   {
     name: "intro",
-    loadEl: () => [document.querySelector(".skip-credits a")]
-  },
-  {
-    name: "recap",
-    loadEl: () => [document.querySelector("div.recap-lower a")]
+    target: [
+      {
+        className: "skip-credits",
+        el: () => document.querySelector(".skip-credits a")
+      }
+    ]
   },
   {
     name: "next",
-    loadEl: () => [
-      document.querySelectorAll(
-        "div.main-hitzone-element-container a.nf-icon-button"
-      )[1],
-      document.querySelector("div.WatchNext-still-hover-container div.PlayIcon")
+    target: [
+      {
+        className: "main-hitzone-element-container",
+        el: () =>
+          document.querySelector(
+            ".main-hitzone-element-container a.nf-flat-button-primary"
+          )
+      },
+      {
+        className: "ptrack-container fill-container",
+        el: () =>
+          document.querySelector(
+            "div.WatchNext-still-hover-container div.PlayIcon"
+          )
+      }
     ]
   }
 ];
@@ -28,19 +40,18 @@ const makeSkipList = setting => {
   let skipList = [];
   for (let index in setting) {
     if (setting[index]) {
-      skipList = [...skipList, targetEls[index].loadEl];
+      skipList = [...skipList, ...targetEls[index].target];
     }
   }
   return skipList;
 };
 
-chrome.storage.sync.get("netflixAutoSkip_setting", function(items) {
-  setting = items.netflixAutoSkip_setting;
-
+chrome.storage.sync.get("netflixAutoSkip_setting_v3", function(items) {
+  setting = items.netflixAutoSkip_setting_v3;
   if (setting === undefined) {
     chrome.storage.sync.set(
       {
-        netflixAutoSkip_setting: [true, true, true]
+        netflixAutoSkip_setting_v3: [true, true]
       },
       function() {}
     );
@@ -49,94 +60,44 @@ chrome.storage.sync.get("netflixAutoSkip_setting", function(items) {
 });
 
 chrome.storage.onChanged.addListener(function(changes, namespace) {
-  setting = changes.netflixAutoSkip_setting.newValue;
+  setting = changes.netflixAutoSkip_setting_v3.newValue;
   skipList = makeSkipList(setting);
+  setChange = true;
 });
 
 /**************************************************************************************************** */
 
-const body = document.querySelector("body");
-let isWatch = false;
-let pathName = "";
+const target = document.getElementById("appMountPoint");
 
-function DOMSubtreeModifiedEventControl(fn) {
-  this.remove = () => {
-    document
-      .querySelector("body")
-      .removeEventListener("DOMSubtreeModified", fn);
-    return this;
-  };
-  this.add = () => {
-    document.querySelector("body").addEventListener("DOMSubtreeModified", fn);
-    return this;
-  };
-}
-
-// BUG FIX
-const loadingCheck = new DOMSubtreeModifiedEventControl(() => {
-  const loadingEl = document.querySelector(".PlayerSpinner--percentage");
-  if (loadingEl) {
-    const playButton = document.querySelector(".button-nfplayerPlay");
-    if (loadingEl.innerHTML === "100%") {
-      if (playButton) {
-        setTimeout(() => {
-          if (playButton) {
-            playButton.onclick();
-          }
-        }, 1000);
+const observer = new MutationObserver(mutations => {
+  mutations.forEach(mutation => {
+    if (mutation.nextSibling && mutation.addedNodes.length) {
+      const className = mutation.addedNodes[0].className;
+      for (let v of skipList) {
+        if (v.className.indexOf(className) !== -1) {
+          v.el().click();
+          break;
+        }
       }
     }
-  }
+  });
 });
 
-const eventControl = new DOMSubtreeModifiedEventControl(() => {
-  let els = [];
-  for (let loadEl of skipList) {
-    els = [...els, ...loadEl()];
-  }
-  const el = selector(els);
-
-  if (el) {
-    setTimeout(() => {
-      eventControl.remove();
-      el.click();
-    }, 200);
-    if (el === targetEls[0].loadEl()[0]) {
-      eventControl.remove();
-      loadingCheck.add();
-      setTimeout(() => {
-        eventControl.add();
-        loadingCheck.remove();
-      }, 10000);
-    } else {
-      setTimeout(() => {
-        eventControl.add();
-      }, 1000);
-    }
-  }
-});
-
-const selector = function(arr) {
-  for (var i = 0; i < arr.length; i++) {
-    if (!arr[i]) {
-      arr.splice(i, 1);
-      i--;
-    }
-  }
-  if (arr.length) return arr[0];
-  return;
-};
+const config = { childList: true, subtree: true };
 
 const watchInterval = setInterval(() => {
   const newPathName = window.location.pathname;
   if (newPathName !== pathName) {
     if (newPathName.indexOf("watch") !== -1) {
-      isWatch = true;
-      eventControl.add();
+      observer.disconnect();
+      observer.observe(target, config);
     } else {
-      isWatch = false;
-      eventControl.remove();
+      observer.disconnect();
     }
+  } else if (setChange) {
+    observer.disconnect();
+    observer.observe(target, config);
+    setChange = false;
   }
   pathName = newPathName;
-}, 1000);
+}, 3000);

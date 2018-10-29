@@ -3,8 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
     $(document).tooltip();
   });
   
-  chrome.storage.sync.get("netflixAutoSkip_setting", function(items) {
-    const setting = items.netflixAutoSkip_setting;
+  chrome.storage.sync.get("netflixAutoSkip_setting_v3", function(items) {
+    const setting = items.netflixAutoSkip_setting_v3;
     let checkboxList = document.querySelectorAll(".option input");
     for (let i = 0; i < checkboxList.length; i++) {
       checkboxList[i].checked = setting[i];
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, "");
     chrome.storage.sync.set(
       {
-        netflixAutoSkip_setting: result
+        netflixAutoSkip_setting_v3: result
       },
       function() {}
     );
