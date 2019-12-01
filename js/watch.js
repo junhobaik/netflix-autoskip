@@ -5,45 +5,18 @@ let setting,
   setChange = false,
   pathName = "";
 
-const targetEls = [
-  {
-    name: "intro",
-    target: [
-      {
-        className: "skip-credits",
-        el: () => document.querySelector(".skip-credits a")
-      }
-    ]
-  },
-  {
-    name: "next",
-    target: [
-      {
-        className: "main-hitzone-element-container",
-        el: () =>
-          document.querySelector(
-            ".main-hitzone-element-container a.nf-flat-button-primary"
-          )
-      },
-      {
-        className: "ptrack-container fill-container",
-        el: () =>
-          document.querySelector(
-            "div.WatchNext-still-hover-container div.PlayIcon"
-          )
-      }
-    ]
-  }
-];
-
 const makeSkipList = setting => {
-  let skipList = [];
-  for (let index in setting) {
-    if (setting[index]) {
-      skipList = [...skipList, ...targetEls[index].target];
-    }
-  }
-  return skipList;
+  console.log(setting);
+  let intro = false;
+  let next = false;
+
+  if (setting[0] === true) intro = true;
+  if (setting[1] === true) next = true;
+
+  return {
+    intro,
+    next
+  };
 };
 
 chrome.storage.sync.get("netflixAutoSkip_setting_v3", function(items) {
@@ -72,13 +45,30 @@ const target = document.getElementById("appMountPoint");
 const observer = new MutationObserver(mutations => {
   mutations.forEach(mutation => {
     if (mutation.nextSibling && mutation.addedNodes.length) {
-      const className = mutation.addedNodes[0].className;
-      for (let v of skipList) {
-        if (v.className.indexOf(className) !== -1) {
-          v.el().click();
-          break;
+      Array.from(mutation.addedNodes).filter(node => {
+        if (
+          skipList.intro &&
+          node.classList &&
+          node.classList.contains("skip-credits")
+        ) {
+          setTimeout(() => {
+            node.querySelector("a").click();
+          }, 200);
         }
-      }
+
+        if (
+          skipList.next &&
+          node.classList &&
+          node.classList.contains("main-hitzone-element-container")
+        ) {
+          Array.from(document.querySelectorAll("button")).filter(v => {
+            const next = v.attributes["data-uia"];
+            if (next && next.value.indexOf("next-episode") > -1) {
+              v.click();
+            }
+          });
+        }
+      });
     }
   });
 });
