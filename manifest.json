@@ -1,7 +1,7 @@
 {
   "name": "Netflix AutoSkip: Intro, Recap, Next Epi...",
   "short_name": "Netflix AutoSkip",
-  "version": "3.2",
+  "version": "3.3",
   "manifest_version": 2,
   "description": "Netflix AutoSkip: Automatic Skip 'intro', 'Next Episode Countdown', 'Recap'",
   "icons": {
