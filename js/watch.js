@@ -6,7 +6,6 @@ let setting,
   pathName = "";
 
 const makeSkipList = setting => {
-  console.log(setting);
   let intro = false;
   let next = false;
 
@@ -19,12 +18,12 @@ const makeSkipList = setting => {
   };
 };
 
-chrome.storage.sync.get("netflixAutoSkip_setting_v3", function(items) {
-  setting = items.netflixAutoSkip_setting_v3;
+chrome.storage.sync.get("netflixAutoSkip_setting_v133", function(items) {
+  setting = items.netflixAutoSkip_setting_v133;
   if (setting === undefined) {
     chrome.storage.sync.set(
       {
-        netflixAutoSkip_setting_v3: [true, true]
+        netflixAutoSkip_setting_v133: [true, true]
       },
       function() {}
     );
@@ -33,7 +32,7 @@ chrome.storage.sync.get("netflixAutoSkip_setting_v3", function(items) {
 });
 
 chrome.storage.onChanged.addListener(function(changes, namespace) {
-  setting = changes.netflixAutoSkip_setting_v3.newValue;
+  setting = changes.netflixAutoSkip_setting_v133.newValue;
   skipList = makeSkipList(setting);
   setChange = true;
 });
@@ -46,6 +45,10 @@ const observer = new MutationObserver(mutations => {
   mutations.forEach(mutation => {
     if (mutation.nextSibling && mutation.addedNodes.length) {
       Array.from(mutation.addedNodes).filter(node => {
+        if (node.classList && node.classList.contains("interrupter-action")) {
+          node.firstChild.click();
+        }
+
         if (
           skipList.intro &&
           node.classList &&
@@ -58,15 +61,12 @@ const observer = new MutationObserver(mutations => {
 
         if (
           skipList.next &&
-          node.classList &&
-          node.classList.contains("main-hitzone-element-container")
+          node.className === "main-hitzone-element-container" &&
+          document.querySelectorAll("button").length === 12
         ) {
-          Array.from(document.querySelectorAll("button")).filter(v => {
-            const next = v.attributes["data-uia"];
-            if (next && next.value.indexOf("next-episode") > -1) {
-              v.click();
-            }
-          });
+          setTimeout(() => {
+            document.querySelector(".button-nfplayerNextEpisode").click();
+          }, 200);
         }
       });
     }
