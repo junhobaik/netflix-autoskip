@@ -1,30 +1,25 @@
 {
-    "name": "Netflix AutoSkip: Intro, Recap, Next Epi...",
-    "short_name": "Netflix AutoSkip",
-    "version": "3.0",
-    "manifest_version": 2,
-    "description": "Netflix AutoSkip: Automatic Skip 'intro', 'Next Episode Countdown', 'Recap'",
-    "icons": {
-        "128": "icon.png"
-    },
-    "background": {
-        "page": "background.html"
-    },
-    "browser_action": {
-        "default_icon": "icon.png",
-        "default_popup": "popup.html"
-    },
-    "permissions": [
-        "*://*.netflix.com/*",
-        "storage"
-    ],
-    "content_scripts": [{
-        "matches": [
-            "*://*.netflix.com/*"
-        ],
-        "js": [
-            "js/watch.js"
-        ]
-    }],
-    "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'"
+  "name": "Netflix AutoSkip: Intro, Recap, Next Epi...",
+  "short_name": "Netflix AutoSkip",
+  "version": "3.2",
+  "manifest_version": 2,
+  "description": "Netflix AutoSkip: Automatic Skip 'intro', 'Next Episode Countdown', 'Recap'",
+  "icons": {
+    "128": "icon.png"
+  },
+  "background": {
+    "page": "background.html"
+  },
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  },
+  "permissions": ["*://*.netflix.com/*", "storage"],
+  "content_scripts": [
+    {
+      "matches": ["*://*.netflix.com/*"],
+      "js": ["js/watch.js"]
+    }
+  ],
+  "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'"
 }
