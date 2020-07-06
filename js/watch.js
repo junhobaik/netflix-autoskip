@@ -1,11 +1,9 @@
-console.log("'Netflix AutoSkip' is running");
-
 let setting,
   skipList = [],
   setChange = false,
   pathName = "";
 
-const makeSkipList = setting => {
+const makeSkipList = (setting) => {
   let intro = false;
   let next = false;
 
@@ -14,24 +12,24 @@ const makeSkipList = setting => {
 
   return {
     intro,
-    next
+    next,
   };
 };
 
-chrome.storage.sync.get("netflixAutoSkip_setting_v133", function(items) {
+chrome.storage.sync.get("netflixAutoSkip_setting_v133", function (items) {
   setting = items.netflixAutoSkip_setting_v133;
   if (setting === undefined) {
     chrome.storage.sync.set(
       {
-        netflixAutoSkip_setting_v133: [true, true]
+        netflixAutoSkip_setting_v133: [true, true],
       },
-      function() {}
+      function () {}
     );
   }
   skipList = makeSkipList(setting);
 });
 
-chrome.storage.onChanged.addListener(function(changes, namespace) {
+chrome.storage.onChanged.addListener(function (changes, namespace) {
   setting = changes.netflixAutoSkip_setting_v133.newValue;
   skipList = makeSkipList(setting);
   setChange = true;
@@ -41,10 +39,10 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 
 const target = document.getElementById("appMountPoint");
 
-const observer = new MutationObserver(mutations => {
-  mutations.forEach(mutation => {
+const observer = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
     if (mutation.nextSibling && mutation.addedNodes.length) {
-      Array.from(mutation.addedNodes).filter(node => {
+      Array.from(mutation.addedNodes).filter((node) => {
         if (node.classList && node.classList.contains("interrupter-action")) {
           node.firstChild.click();
         }

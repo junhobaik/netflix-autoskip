@@ -1,14 +1,11 @@
 {
-  "name": "Netflix AutoSkip: Intro, Next Episode SKIP",
+  "name": "Netflix AutoSkip: Skip intro and outro",
   "short_name": "Netflix AutoSkip",
-  "version": "3.3",
+  "version": "3.4",
   "manifest_version": 2,
-  "description": "Netflix AutoSkip: Automatic Skip 'intro', 'Next Episode Countdown', 'Recap'",
+  "description": "In Netflix, Automatically skip the intro & Play the next episode without waiting",
   "icons": {
     "128": "icon.png"
-  },
-  "background": {
-    "page": "background.html"
   },
   "browser_action": {
     "default_icon": "icon.png",
